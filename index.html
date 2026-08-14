@@ -148,7 +148,9 @@
     const SUPABASE_URL = "https://vpquzuweianhldjnrtmp.supabase.co";
     const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_ZSj6Q0_XWSLCdoVKkIuZ1g_PYdDF-7A";
 
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+    // Attention : la librairie du CDN occupe deja le nom global "supabase",
+    // donc on nomme notre client "db" pour eviter un conflit de noms.
+    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
     // Raccourcis vers les éléments de la page
     const champTache = document.getElementById("champ-tache");
@@ -160,7 +162,7 @@
     async function chargerTaches() {
       message.textContent = "Chargement...";
 
-      const { data, error } = await supabase
+      const { data, error } = await db
         .from("tasks")
         .select("*")
         .order("created_at", { ascending: false });
@@ -205,7 +207,7 @@
         return;
       }
 
-      const { error } = await supabase
+      const { error } = await db
         .from("tasks")
         .insert({ title: titre, status: "À faire" });
 
